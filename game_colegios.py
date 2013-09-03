@@ -13,7 +13,7 @@ class Ball(pygame.sprite.Sprite):
     """Ball Class for set image, speed and velocity """
     def __init__(self, xy, speed, angle):
         pygame.sprite.Sprite.__init__(self)
-        self.img_load('../images/sphere.png')
+        self.img_load('images/sphere.png')
         self.rect.centerx, self.rect.centery = xy
         self.speed =  speed
         self.angle = angle
@@ -53,12 +53,12 @@ class BallManager:
             ball.move()
             ball.bounce()
 
-    def add_ball(self, xy, speed, angle):
+    def addBall(self, xy, speed, angle):
         self.blist.append(Ball(xy, speed, angle))
 
     def multipleBalls(self, numballs):
         for i in range(numballs):
-            self.add_ball((np.random.randint(0, SCREEN_WIDTH),
+            self.addBall((np.random.randint(0, SCREEN_WIDTH),
                           np.random.randint(0, SCREEN_HEIGHT)),
                           np.random.randint(4, 6),
                           np.random.uniform(0, np.pi*2))
@@ -138,23 +138,23 @@ class Game:
         for ball in self.ball_manager.blist:
             self.sprites.add(ball)
 
-    def on_init(self):
+    def onInit(self):
         pygame.init()
         self.display_surf = pygame.display.set_mode(self.size, pygame.HWSURFACE | pygame.DOUBLEBUF)
         self.display_surf.blit(self.background, (0,0))
         self._running = True
         self.myKinect.context.start_generating_all()
 
-    def on_event(self, event):
+    def onEvent(self, event):
         if event.type == pygame.QUIT:
             self._running = False
 
-    def on_loop(self):        
+    def onLoop(self):        
         self.myKinect.context.wait_any_update_all()
         self.myKinect.capture_rgb()
         self.ball_manager.update()
 
-    def on_render(self):
+    def onRender(self):
         self.sprites.clear(self.display_surf, self.background)
         self.display_surf.blit(self.frame, (0,0))
         for sprite in self.sprites:
@@ -163,20 +163,20 @@ class Game:
         pygame.display.update(dirty)
         pygame.display.flip()
 
-    def on_cleanup(self):
+    def onCleanup(self):
         pygame.quit()
  
-    def on_execute(self):
-        self.on_init()
+    def onExecute(self):
+        self.onInit()
         while( self._running ):
             for event in pygame.event.get():
-                self.on_event(event)
-            self.on_loop()
-            self.on_render()
-        self.on_cleanup()
+                self.onEvent(event)
+            self.onLoop()
+            self.onRender()
+        self.onCleanup()
 
 
 if __name__ == '__main__':
     theApp = Game()
-    theApp.on_execute()
+    theApp.onExecute()
 
