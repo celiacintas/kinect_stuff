@@ -10,7 +10,7 @@ SCREEN_WIDTH = 640
 SCREEN_HEIGHT = 480
 
 class Ball(pygame.sprite.Sprite):
-    """Ball Class for set image, speed and velocity """
+    """Ball Class for set image, speed and angle """
     def __init__(self, xy, speed, angle):
         pygame.sprite.Sprite.__init__(self)
         self.img_load('images/sphere.png')
