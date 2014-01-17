@@ -60,7 +60,7 @@ class BallManager:
         for i in range(numballs):
             self.addBall((np.random.randint(0, SCREEN_WIDTH),
                           np.random.randint(0, SCREEN_HEIGHT)),
-                          np.random.randint(4, 6),
+                          np.random.randint(4, 20),
                           np.random.uniform(0, np.pi*2))
 class Kinect:
     """Manage context and generator of the kinect"""
@@ -111,7 +111,8 @@ class Kinect:
                 if new_rect.colliderect(kinect_rect):
                     print "wiii %d" %(len(self.game.ball_manager.blist))
                     ball.kill()
-            pygame.draw.circle(self.game.display_surf, (0, 128, 255), (self.game.size[0]/2 - int(pos[0]), self.game.size[1]/2 - int(pos[1])), 10)
+            pos = self.depth_generator.to_projective([pos])[0]
+            pygame.draw.circle(self.game.display_surf, (0, 128, 255), (int(pos[0]), int(pos[1])), 10)
 
 
     def capture_rgb(self):
@@ -134,7 +135,7 @@ class Game:
         self.size = (SCREEN_WIDTH, SCREEN_HEIGHT)
         self.frame = None
         self.myKinect = Kinect(self)
-        self.ball_manager = BallManager(100)
+        self.ball_manager = BallManager(10)
         for ball in self.ball_manager.blist:
             self.sprites.add(ball)
 
