@@ -111,9 +111,7 @@ class Kinect:
                 if new_rect.colliderect(kinect_rect):
                     print "wiii %d" %(len(self.game.ball_manager.blist))
                     ball.kill()
-            pos = self.depth_generator.to_projective([pos])[0]
-            pygame.draw.circle(self.game.display_surf, (0, 128, 255), (int(pos[0]), int(pos[1])), 10)
-
+            
 
     def capture_rgb(self):
         rgb_frame = np.fromstring(self.image_generator.get_raw_image_map_bgr(), dtype=np.uint8).reshape(SCREEN_HEIGHT, SCREEN_WIDTH, 3)
@@ -135,7 +133,7 @@ class Game:
         self.size = (SCREEN_WIDTH, SCREEN_HEIGHT)
         self.frame = None
         self.myKinect = Kinect(self)
-        self.ball_manager = BallManager(10)
+        self.ball_manager = BallManager(30)
         for ball in self.ball_manager.blist:
             self.sprites.add(ball)
 
