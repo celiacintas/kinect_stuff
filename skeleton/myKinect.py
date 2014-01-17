@@ -1,26 +1,13 @@
 #!/usr/bin/env python2
 # -*- coding: utf-8 -*-
 
-#!/usr/bin/python
-# The equivalent of:
-##  "Working with the Skeleton"
-# in the OpenNI user guide.
-
-"""
-This shows how to identify when a new user is detected, look for a pose for
-that user, calibrate the users when they are in the pose, and track them.
-
-Specifically, it prints out the location of the users' head,
-as they are tracked.
-"""
-
-# Pose to use to calibrate the user
-pose_to_use = 'Psi'
-
 import numpy as np
 from cv2 import cv
 import openni
 import pygame
+
+# Pose to use to calibrate the user
+pose_to_use = 'Psi'
 
 
 class Kinect:
@@ -46,14 +33,16 @@ class Kinect:
         # Obtain the skeleton & pose detection capabilities
         self.skel_cap = self.user.skeleton_cap
         self.pose_cap = self.user.pose_detection_cap
+
+        # Define Joins we want to track
         self.joints = ['SKEL_HEAD', 'SKEL_LEFT_FOOT', 'SKEL_RIGHT_SHOULDER', 
                         'SKEL_LEFT_HAND', 'SKEL_NECK',
                         'SKEL_RIGHT_FOOT', 'SKEL_LEFT_HIP', 'SKEL_RIGHT_HAND', 
                         'SKEL_TORSO', 'SKEL_LEFT_ELBOW', 'SKEL_LEFT_KNEE', 
                         'SKEL_RIGHT_HIP', 'SKEL_LEFT_SHOULDER',
                         'SKEL_RIGHT_ELBOW','SKEL_RIGHT_KNEE']
+    
     # Declare the callbacks
-    #,
     def new_user(self, src, id):
         print "1/4 User {} detected. Looking for pose..." .format(id)
         self.pose_cap.start_detection(pose_to_use, id)
@@ -80,16 +69,9 @@ class Kinect:
     def getJoints(self):
         for id in self.user.users:
             if self.skel_cap.is_tracking(id) and self.skel_cap.is_calibrated(id):
-                names = map(lambda a: getattr(openni, a), self.joints)
-                joints = [self.skel_cap.get_joint_position(id, j) for j in map(lambda a: getattr(openni, a), self.joints)]
+                joints = [self.skel_cap.get_joint_position(id, j) 
+                          for j in map(lambda a: getattr(openni, a), self.joints)]
                 
-                #joints = [self.skel_cap.get_joint_position(id, j) for j in names[:3]]
-                
-                """head = self.skel_cap.get_joint_position(id, openni.SKEL_HEAD)
-                torso = self.skel_cap.get_joint_position(id, openni.SKEL_TORSO)
-                hand_iz = self.skel_cap.get_joint_position(id, openni.SKEL_LEFT_HAND)
-                hand_der = self.skel_cap.get_joint_position(id, openni.SKEL_RIGHT_HAND)
-                return [head, torso, hand_der, hand_der]"""
                 return [j.point for j in joints]
 
     def register(self):

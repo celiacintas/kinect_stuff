@@ -1,5 +1,6 @@
 #!/usr/bin/env python2
 # -*- coding: utf-8 -*-
+
 import pygame
 from myKinect import Kinect
 
@@ -8,7 +9,7 @@ SCREEN_HEIGHT = 480
 
 class Game:
 
-    """Define screen, sprites and states of the game"""
+    """Define screen and states of the game"""
 
     def __init__(self):
         self.timer = pygame.time.Clock()
@@ -21,10 +22,7 @@ class Game:
         self.frame = None
         self.myKinect = Kinect(self)
         self.myKinect.register()
-        #self.ball_manager = BallManager(10)
-        # for ball in self.ball_manager.blist:
-        #    self.sprites.add(ball)
-    
+ 
     def onInit(self):
         pygame.init()
         self.display_surf = pygame.display.set_mode(self.size, pygame.HWSURFACE | pygame.DOUBLEBUF)
@@ -41,7 +39,6 @@ class Game:
         self.myKinect.capture_rgb()
         newpos = self.myKinect.getJoints()
         if newpos:
-            #print newpos
             tmp = self.myKinect.depth_generator.to_projective(newpos)
             map(lambda pos: pygame.draw.circle(self.frame, (255, 0, 0),
                               (int(pos[0]), int(pos[1]))
@@ -50,9 +47,6 @@ class Game:
     def onRender(self):
         self.sprites.clear(self.display_surf, self.background)
         self.display_surf.blit(self.frame, (0,0))
-        #for sprite in self.sprites:
-        #        sprite.update()
-        #dirty = self.sprites.draw(self.display_surf)
         pygame.display.update()
         pygame.display.flip()
 
