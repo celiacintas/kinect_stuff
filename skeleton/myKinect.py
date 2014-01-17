@@ -1,12 +1,11 @@
 #!/usr/bin/env python2
 # -*- coding: utf-8 -*-
 
-import numpy as np
-from cv2 import cv
 import openni
 import pygame
+import Image
+import numpy as np
 
-# Pose to use to calibrate the user
 pose_to_use = 'Psi'
 
 
@@ -17,7 +16,6 @@ class Kinect:
         self.ctx = openni.Context()
         self.ctx.init()
 
-        # Create the user generator
         self.user = openni.UserGenerator()
         self.user.create(self.ctx)
 
@@ -25,23 +23,22 @@ class Kinect:
         self.depth_generator.create(self.ctx)
         self.depth_generator.set_resolution_preset(openni.RES_VGA)
         self.depth_generator.fps = 30
-        
+
         self.image_generator = openni.ImageGenerator()
         self.image_generator.create(self.ctx)
         self.image_generator.set_resolution_preset(openni.RES_VGA)
-        
-        # Obtain the skeleton & pose detection capabilities
+
         self.skel_cap = self.user.skeleton_cap
         self.pose_cap = self.user.pose_detection_cap
 
         # Define Joins we want to track
-        self.joints = ['SKEL_HEAD', 'SKEL_LEFT_FOOT', 'SKEL_RIGHT_SHOULDER', 
-                        'SKEL_LEFT_HAND', 'SKEL_NECK',
-                        'SKEL_RIGHT_FOOT', 'SKEL_LEFT_HIP', 'SKEL_RIGHT_HAND', 
-                        'SKEL_TORSO', 'SKEL_LEFT_ELBOW', 'SKEL_LEFT_KNEE', 
-                        'SKEL_RIGHT_HIP', 'SKEL_LEFT_SHOULDER',
-                        'SKEL_RIGHT_ELBOW','SKEL_RIGHT_KNEE']
-    
+        self.joints = ['SKEL_HEAD', 'SKEL_LEFT_FOOT', 'SKEL_RIGHT_SHOULDER',
+                       'SKEL_LEFT_HAND', 'SKEL_NECK',
+                       'SKEL_RIGHT_FOOT', 'SKEL_LEFT_HIP', 'SKEL_RIGHT_HAND',
+                       'SKEL_TORSO', 'SKEL_LEFT_ELBOW', 'SKEL_LEFT_KNEE',
+                       'SKEL_RIGHT_HIP', 'SKEL_LEFT_SHOULDER',
+                       'SKEL_RIGHT_ELBOW', 'SKEL_RIGHT_KNEE']
+
     # Declare the callbacks
     def new_user(self, src, id):
         print "1/4 User {} detected. Looking for pose..." .format(id)
@@ -69,13 +66,12 @@ class Kinect:
     def getJoints(self):
         for id in self.user.users:
             if self.skel_cap.is_tracking(id) and self.skel_cap.is_calibrated(id):
-                joints = [self.skel_cap.get_joint_position(id, j) 
+                joints = [self.skel_cap.get_joint_position(id, j)
                           for j in map(lambda a: getattr(openni, a), self.joints)]
-                
+
                 return [j.point for j in joints]
 
     def register(self):
-
         self.user.register_user_cb(self.new_user, self.lost_user)
         self.pose_cap.register_pose_detected_cb(self.pose_detected)
         self.skel_cap.register_c_start_cb(self.calibration_start)
@@ -83,12 +79,11 @@ class Kinect:
         self.skel_cap.set_profile(openni.SKEL_PROFILE_ALL)
 
     def capture_rgb(self):
-        rgb_frame = np.fromstring(self.image_generator.get_raw_image_map_bgr(), dtype=np.uint8).reshape(
-            self.game.size[1], self.game.size[0], 3)
-        image = cv.fromarray(rgb_frame)
-        #cv.Flip(image, None, 1)
-        cv.CvtColor(cv.fromarray(rgb_frame), image, cv.CV_BGR2RGB)
+        rgb_frame = np.fromstring(self.image_generator.get_raw_image_map_bgr(),
+                                  dtype=np.uint8).reshape(self.game.size[1],
+                                                          self.game.size[0], 3)
+        image = Image.fromarray(rgb_frame)
+        b, g, r = image.split()
+        image = Image.merge("RGB", (r, g, b))
         self.game.frame = pygame.image.frombuffer(
-            image.tostring(), cv.GetSize(image), 'RGB')
-
-
+            image.tostring(), image.size, 'RGB')

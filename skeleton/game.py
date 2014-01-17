@@ -7,6 +7,7 @@ from myKinect import Kinect
 SCREEN_WIDTH = 640
 SCREEN_HEIGHT = 480
 
+
 class Game:
 
     """Define screen and states of the game"""
@@ -17,16 +18,17 @@ class Game:
         self._running = True
         self.display_surf = None
         self.background = pygame.Surface((SCREEN_WIDTH, SCREEN_HEIGHT))
-        self.background.fill((0,0,0))
+        self.background.fill((0, 0, 0))
         self.size = (SCREEN_WIDTH, SCREEN_HEIGHT)
         self.frame = None
         self.myKinect = Kinect(self)
         self.myKinect.register()
- 
+
     def onInit(self):
         pygame.init()
-        self.display_surf = pygame.display.set_mode(self.size, pygame.HWSURFACE | pygame.DOUBLEBUF)
-        self.display_surf.blit(self.background, (0,0))
+        self.display_surf = pygame.display.set_mode(
+            self.size, pygame.HWSURFACE | pygame.DOUBLEBUF)
+        self.display_surf.blit(self.background, (0, 0))
         self._running = True
         self.myKinect.ctx.start_generating_all()
 
@@ -41,12 +43,11 @@ class Game:
         if newpos:
             tmp = self.myKinect.depth_generator.to_projective(newpos)
             map(lambda pos: pygame.draw.circle(self.frame, (255, 0, 0),
-                              (int(pos[0]), int(pos[1]))
-                              , 10, 10), tmp)
+               (int(pos[0]), int(pos[1])), 10, 10), tmp)
 
     def onRender(self):
         self.sprites.clear(self.display_surf, self.background)
-        self.display_surf.blit(self.frame, (0,0))
+        self.display_surf.blit(self.frame, (0, 0))
         pygame.display.update()
         pygame.display.flip()
 
