@@ -8,11 +8,13 @@ SCREEN_WIDTH = 640
 SCREEN_HEIGHT = 480
 
 
-class Game:
+class Game(object):
 
     """Define screen and states of the game"""
 
     def __init__(self):
+        """Setup the display and configure the kinect
+        for the game."""
         self.timer = pygame.time.Clock()
         self.sprites = pygame.sprite.RenderUpdates()
         self._running = True
@@ -21,49 +23,56 @@ class Game:
         self.background.fill((0, 0, 0))
         self.size = (SCREEN_WIDTH, SCREEN_HEIGHT)
         self.frame = None
-        self.myKinect = Kinect(self)
-        self.myKinect.register()
+        self.my_kinect = Kinect(self)
+        self.my_kinect.register()
 
-    def onInit(self):
+    def on_init(self):
+        """Initialize kinect and display"""
         pygame.init()
         self.display_surf = pygame.display.set_mode(
             self.size, pygame.HWSURFACE | pygame.DOUBLEBUF)
         self.display_surf.blit(self.background, (0, 0))
         self._running = True
-        self.myKinect.ctx.start_generating_all()
+        self.my_kinect.ctx.start_generating_all()
 
-    def onEvent(self, event):
+    def on_event(self, event):
+        """Event management"""
         if event.type == pygame.QUIT:
             self._running = False
 
-    def onLoop(self):
-        self.myKinect.ctx.wait_any_update_all()
-        self.myKinect.capture_rgb()
-        newpos = self.myKinect.getJoints()
+    def on_loop(self):
+        """Update frame from kinect and display
+        new joints."""
+        self.my_kinect.ctx.wait_any_update_all()
+        self.my_kinect.capture_rgb()
+        newpos = self.my_kinect.getJoints()
         if newpos:
-            tmp = self.myKinect.depth_generator.to_projective(newpos)
-            map(lambda pos: pygame.draw.circle(self.frame, (255, 0, 0),
+            tmp = self.my_kinect.depth_generator.to_projective(newpos)
+            map(lambda pos: pygame.draw.circle(self.frame, (255, 50, 0),
                (int(pos[0]), int(pos[1])), 10, 10), tmp)
 
-    def onRender(self):
+    def on_render(self):
+        """Render cam view and point joints."""
         self.sprites.clear(self.display_surf, self.background)
         self.display_surf.blit(self.frame, (0, 0))
         pygame.display.update()
         pygame.display.flip()
 
-    def onCleanup(self):
+    def on_cleanup(self):
+        """Bye bye."""
         pygame.quit()
 
-    def onExecute(self):
-        self.onInit()
-        while(self._running):
+    def on_execute(self):
+        """Main loop of pygame."""
+        self.on_init()
+        while self._running:
             for event in pygame.event.get():
-                self.onEvent(event)
-            self.onLoop()
-            self.onRender()
-        self.onCleanup()
+                self.on_event(event)
+            self.on_loop()
+            self.on_render()
+        self.on_cleanup()
 
 
 if __name__ == '__main__':
-    theApp = Game()
-    theApp.onExecute()
+    GAME_APP = Game()
+    GAME_APP.on_execute()
