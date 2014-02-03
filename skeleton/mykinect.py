@@ -6,10 +6,10 @@ import pygame
 import Image
 import numpy as np
 
-pose_to_use = 'Psi'
+POSE2USE = 'Psi'
 
 
-class Kinect:
+class Kinect(object):
 
     def __init__(self, game):
         self.game = game
@@ -42,10 +42,10 @@ class Kinect:
     # Declare the callbacks
     def new_user(self, src, id):
         print "1/4 User {} detected. Looking for pose..." .format(id)
-        self.pose_cap.start_detection(pose_to_use, id)
+        self.pose_cap.start_detection(POSE2USE, id)
 
     def pose_detected(self, src, pose, id):
-        print "2/4 Detected pose {} on user {}. Requesting calibration..." .format(pose, id)
+        print "2/4 Pose {} on user {}. Requesting calibration..." .format(pose, id)
         self.pose_cap.stop_detection(id)
         self.skel_cap.request_calibration(id, True)
 

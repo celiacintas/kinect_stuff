@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import pygame
-from myKinect import Kinect
+from mykinect import Kinect
 
 SCREEN_WIDTH = 640
 SCREEN_HEIGHT = 480
