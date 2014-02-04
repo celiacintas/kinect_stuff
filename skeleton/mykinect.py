@@ -52,6 +52,9 @@ class Kinect(object):
     def calibration_start(self, src, id):
         print "3/4 Calibration started for user {}." .format(id)
 
+    def calibration_in_progress(self, src, id, status):
+        print "jijijijij"
+
     def calibration_complete(self, src, id, status):
         if status == openni.CALIBRATION_STATUS_OK:
             print "4/4 User {} calibrated successfully! Starting to track." .format(id)
@@ -75,6 +78,7 @@ class Kinect(object):
         self.user.register_user_cb(self.new_user, self.lost_user)
         self.pose_cap.register_pose_detected_cb(self.pose_detected)
         self.skel_cap.register_c_start_cb(self.calibration_start)
+        self.skel_cap.register_c_in_progress_cb(self.calibration_in_progress)
         self.skel_cap.register_c_complete_cb(self.calibration_complete)
         self.skel_cap.set_profile(openni.SKEL_PROFILE_ALL)
 
