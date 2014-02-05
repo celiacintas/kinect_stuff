@@ -53,7 +53,7 @@ class Kinect(object):
         print "3/4 Calibration started for user {}." .format(id)
 
     def calibration_in_progress(self, src, id, status):
-        print "jijijijij"
+        pass
 
     def calibration_complete(self, src, id, status):
         if status == openni.CALIBRATION_STATUS_OK:
@@ -66,13 +66,13 @@ class Kinect(object):
     def lost_user(self, src, id):
         print "--- User {} lost." .format(id)
 
-    def getJoints(self):
+    def get_joints(self):
         for id in self.user.users:
             if self.skel_cap.is_tracking(id) and self.skel_cap.is_calibrated(id):
                 joints = [self.skel_cap.get_joint_position(id, j)
                           for j in map(lambda a: getattr(openni, a), self.joints)]
 
-                return [j.point for j in joints]
+                return self.depth_generator.to_projective([j.point for j in joints])
 
     def register(self):
         self.user.register_user_cb(self.new_user, self.lost_user)
@@ -91,3 +91,7 @@ class Kinect(object):
         image = Image.merge("RGB", (r, g, b))
         self.game.frame = pygame.image.frombuffer(
             image.tostring(), image.size, 'RGB')
+
+    def update_sensor(self):
+        self.ctx.wait_any_update_all()
+        

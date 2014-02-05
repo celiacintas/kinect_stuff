@@ -43,13 +43,12 @@ class Game(object):
     def on_loop(self):
         """Update frame from kinect and display
         new joints."""
-        self.my_kinect.ctx.wait_any_update_all()
+        self.my_kinect.update_sensor()
         self.my_kinect.capture_rgb()
-        newpos = self.my_kinect.getJoints()
-        if newpos:
-            tmp = self.my_kinect.depth_generator.to_projective(newpos)
+        newpos_skeleton = self.my_kinect.get_joints()
+        if newpos_skeleton:
             map(lambda pos: pygame.draw.circle(self.frame, (255, 50, 0),
-               (int(pos[0]), int(pos[1])), 10, 10), tmp)
+               (int(pos[0]), int(pos[1])), 10, 10), newpos_skeleton)
 
     def on_render(self):
         """Render cam view and point joints."""
@@ -74,5 +73,5 @@ class Game(object):
 
 
 if __name__ == '__main__':
-    GAME_APP = Game()
-    GAME_APP.on_execute()
+    game_app = Game()
+    game_app.on_execute()
