@@ -132,7 +132,7 @@ class Game:
         self.background.fill((0,0,0))
         self.size = (SCREEN_WIDTH, SCREEN_HEIGHT)
         self.frame = None
-        self.myKinect = Kinect(self)
+        self.my_kinect = Kinect(self)
         self.ball_manager = BallManager(30)
         for ball in self.ball_manager.blist:
             self.sprites.add(ball)
@@ -142,15 +142,15 @@ class Game:
         self.display_surf = pygame.display.set_mode(self.size, pygame.HWSURFACE | pygame.DOUBLEBUF)
         self.display_surf.blit(self.background, (0,0))
         self._running = True
-        self.myKinect.context.start_generating_all()
+        self.my_kinect.context.start_generating_all()
 
     def on_event(self, event):
         if event.type == pygame.QUIT:
             self._running = False
 
     def on_loop(self):        
-        self.myKinect.context.wait_any_update_all()
-        self.myKinect.capture_rgb()
+        self.my_kinect.context.wait_any_update_all()
+        self.my_kinect.capture_rgb()
         self.ball_manager.update()
 
     def on_render(self):
