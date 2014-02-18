@@ -42,7 +42,7 @@ class Ball(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         
 
-class BallManager:
+class BallManager(object):
     """ Create and update state of balls"""
     def __init__(self, numballs = 30, balls = []):      
         self.blist = balls
@@ -62,7 +62,7 @@ class BallManager:
                           np.random.randint(0, SCREEN_HEIGHT)),
                           np.random.randint(4, 20),
                           np.random.uniform(0, np.pi*2))
-class Kinect:
+class Kinect(object):
     """Manage context and generator of the kinect"""
     def __init__(self, game):
 
@@ -121,7 +121,7 @@ class Kinect:
         self.game.frame = pygame.image.frombuffer(image.tostring(), cv.GetSize(image), 'RGB')
 
 
-class Game:
+class Game(object):
     """Define screen, sprites and states of the game"""
     def __init__(self):
         self.timer = pygame.time.Clock()
