@@ -9,15 +9,16 @@ import numpy as np
 import cv
 import sys
 
-# take from repo python-openni 
+# array translation take from repo python-openni https://github.com/leezl/OpenNi-Python.git
+
 def translate_frame(frame_data, type):
-    #need to know what format to get the buffer in:
-    # if color pixel type is RGB888, then it must be uint8, 
-    #otherwise it will split the pixels incorrectly
+    """
+    need to know what format to get the buffer in:
+    if color pixel type is RGB888, then it must be uint8, 
+    otherwise it will split the pixels incorrectly
+    """
     img  = np.frombuffer(frame_data, dtype=type)
     whatisit = img.size
-    #QVGA is what my camera defaulted to, so: 1 x 240 x 320
-    #also order was weird (1, 240, 320) not (320, 240, 1)
     if whatisit == (640*480*1):#QVGA
         #shape it accordingly, that is, 1048576=1024*1024
         img.shape = (1, 480, 640)#small chance these may be reversed in certain apis...This order? Really?
