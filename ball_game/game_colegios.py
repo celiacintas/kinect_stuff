@@ -1,6 +1,6 @@
 #!/usr/bin/env python2
 # -*- coding: utf-8 -*-
-
+#
 import openni
 import pygame 
 import numpy as np
@@ -79,7 +79,7 @@ class Kinect(object):
         
         self.gesture_generator = openni.GestureGenerator()
         self.gesture_generator.create(self.context)
-        self.gesture_generator.add_gesture('Wave')
+        self.gesture_generator.add_gesture('Wave') #Wave
         
         self.hands_generator = openni.HandsGenerator()
         self.hands_generator.create(self.context)
