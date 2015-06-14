@@ -3,7 +3,7 @@
 
 import openni
 import pygame
-import Image
+from PIL import Image
 import numpy as np
 
 POSE2USE = 'Psi'
@@ -27,6 +27,7 @@ class Kinect(object):
         self.image_generator = openni.ImageGenerator()
         self.image_generator.create(self.ctx)
         self.image_generator.set_resolution_preset(openni.RES_VGA)
+        self.depth_generator.alternative_view_point_cap.set_view_point(self.image_generator)
 
         self.skel_cap = self.user.skeleton_cap
         self.pose_cap = self.user.pose_detection_cap
@@ -73,7 +74,8 @@ class Kinect(object):
                           for j in map(lambda a: getattr(openni, a), self.joints)]
 
                 return self.depth_generator.to_projective([j.point for j in joints])
-
+                #return [j.point for j in joints]
+    
     def register(self):
         self.user.register_user_cb(self.new_user, self.lost_user)
         self.pose_cap.register_pose_detected_cb(self.pose_detected)
