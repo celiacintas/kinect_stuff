@@ -74,8 +74,7 @@ class Kinect(object):
                           for j in map(lambda a: getattr(openni, a), self.joints)]
 
                 return self.depth_generator.to_projective([j.point for j in joints])
-                #return [j.point for j in joints]
-    
+                
     def register(self):
         self.user.register_user_cb(self.new_user, self.lost_user)
         self.pose_cap.register_pose_detected_cb(self.pose_detected)
