@@ -40,7 +40,6 @@ class Kinect(object):
                        'SKEL_RIGHT_HIP', 'SKEL_LEFT_SHOULDER',
                        'SKEL_RIGHT_ELBOW', 'SKEL_RIGHT_KNEE']
 
-    # Declare the callbacks
     def new_user(self, src, id):
         print "1/4 User {} detected. Looking for pose..." .format(id)
         self.pose_cap.start_detection(POSE2USE, id)
