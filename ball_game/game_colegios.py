@@ -1,6 +1,6 @@
 #!/usr/bin/env python2
 # -*- coding: utf-8 -*-
-
+#
 import openni
 import pygame 
 import numpy as np
@@ -42,27 +42,27 @@ class Ball(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         
 
-class BallManager(object):
+class BallManager:
     """ Create and update state of balls"""
     def __init__(self, numballs = 30, balls = []):      
         self.blist = balls
-        self.multiple_balls(numballs)
+        self.multipleBalls(numballs)
 
     def update(self):
         for ball in self.blist:
             ball.move()
             ball.bounce()
 
-    def add_ball(self, xy, speed, angle):
+    def addBall(self, xy, speed, angle):
         self.blist.append(Ball(xy, speed, angle))
 
-    def multiple_balls(self, numballs):
+    def multipleBalls(self, numballs):
         for i in range(numballs):
-            self.add_ball((np.random.randint(0, SCREEN_WIDTH),
+            self.addBall((np.random.randint(0, SCREEN_WIDTH),
                           np.random.randint(0, SCREEN_HEIGHT)),
                           np.random.randint(4, 20),
                           np.random.uniform(0, np.pi*2))
-class Kinect(object):
+class Kinect:
     """Manage context and generator of the kinect"""
     def __init__(self, game):
 
@@ -121,7 +121,7 @@ class Kinect(object):
         self.game.frame = pygame.image.frombuffer(image.tostring(), cv.GetSize(image), 'RGB')
 
 
-class Game(object):
+class Game:
     """Define screen, sprites and states of the game"""
     def __init__(self):
         self.timer = pygame.time.Clock()
@@ -132,28 +132,28 @@ class Game(object):
         self.background.fill((0,0,0))
         self.size = (SCREEN_WIDTH, SCREEN_HEIGHT)
         self.frame = None
-        self.my_kinect = Kinect(self)
+        self.myKinect = Kinect(self)
         self.ball_manager = BallManager(30)
         for ball in self.ball_manager.blist:
             self.sprites.add(ball)
 
-    def on_init(self):
+    def onInit(self):
         pygame.init()
         self.display_surf = pygame.display.set_mode(self.size, pygame.HWSURFACE | pygame.DOUBLEBUF)
         self.display_surf.blit(self.background, (0,0))
         self._running = True
-        self.my_kinect.context.start_generating_all()
+        self.myKinect.context.start_generating_all()
 
-    def on_event(self, event):
+    def onEvent(self, event):
         if event.type == pygame.QUIT:
             self._running = False
 
-    def on_loop(self):        
-        self.my_kinect.context.wait_any_update_all()
-        self.my_kinect.capture_rgb()
+    def onLoop(self):        
+        self.myKinect.context.wait_any_update_all()
+        self.myKinect.capture_rgb()
         self.ball_manager.update()
 
-    def on_render(self):
+    def onRender(self):
         self.sprites.clear(self.display_surf, self.background)
         self.display_surf.blit(self.frame, (0,0))
         for sprite in self.sprites:
@@ -162,20 +162,20 @@ class Game(object):
         pygame.display.update(dirty)
         pygame.display.flip()
 
-    def on_cleanup(self):
+    def onCleanup(self):
         pygame.quit()
  
-    def on_execute(self):
-        self.on_init()
+    def onExecute(self):
+        self.onInit()
         while( self._running ):
             for event in pygame.event.get():
-                self.on_event(event)
-            self.on_loop()
-            self.on_render()
-        self.on_cleanup()
+                self.onEvent(event)
+            self.onLoop()
+            self.onRender()
+        self.onCleanup()
 
 
 if __name__ == '__main__':
     theApp = Game()
-    theApp.on_execute()
+    theApp.onExecute()
 
